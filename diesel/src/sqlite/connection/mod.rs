@@ -255,6 +255,16 @@ impl SqliteConnection {
         self.transaction_sql(f, "BEGIN IMMEDIATE")
     }
 
+    ///
+    pub fn enable_load_extension(&self) -> Result<(), ConnectionError> {
+        self.raw_connection.enable_load_extension(true)
+    }
+
+    ///
+    pub fn disable_load_extension(&self) -> Result<(), ConnectionError> {
+        self.raw_connection.enable_load_extension(false)
+    }
+
     /// Run a transaction with `BEGIN EXCLUSIVE`
     ///
     /// This method will return an error if a transaction is already open.

@@ -36,6 +36,21 @@ pub(super) struct RawConnection {
 }
 
 impl RawConnection {
+    ///
+    pub(super) fn enable_load_extension(&self, enabled: bool) -> Result<(), ConnectionError> {
+        let res = unsafe {
+            ffi::sqlite3_enable_load_extension(self.internal_connection.as_ptr(), enabled as _)
+        };
+
+        match res {
+            ffi::SQLITE_OK => Ok(()),
+            err_code => {
+                let message = super::error_message(err_code);
+                Err(ConnectionError::BadConnection(message.into()))
+            }
+        }
+    }
+
     pub(super) fn establish(database_url: &str) -> ConnectionResult<Self> {
         let mut conn_pointer = ptr::null_mut();
 
